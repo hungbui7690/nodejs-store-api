@@ -1,5 +1,5 @@
 /*
-  {{URL}}/products?featured=true&company=caressa&name=&sort=price,-name >> sort by price (high to low) + name (Z-A) >> name will be use when price is the same
+  
 
 */
 

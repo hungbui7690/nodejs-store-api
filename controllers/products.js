@@ -20,14 +20,15 @@ const getAllProducts = async (req, res) => {
     queryObject.name = { $regex: name, $options: 'i' }
   }
 
-  let products = await Product.find(queryObject)
+  // (a) to make this work >>> must remove await & use let
+  let products = Product.find(queryObject)
 
   if (sort) {
-    // (a) sort
+    // (b) sort
     const sortList = sort.split(',').join(' ') // we need space between each sort term >> name price, NOT nameprice (check getAllProductsStatic above)
-    products = products.sort()
+    products = products.sort(sortList)
   } else {
-    // (b)
+    // (c)
     products = result.sort('createdAt')
   }
 
