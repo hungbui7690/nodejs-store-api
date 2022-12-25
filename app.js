@@ -1,7 +1,5 @@
 /*
-  This one, we will work with query string params 
-  - CASE 1: /products?featured=true >> req.query === {featured : true}
-  - CASE 2: /products?featured=true?company=caressa&name=a >>> we use regular expression >> name must contains letter 'a'
+  {{URL}}/products?featured=true&company=caressa&name=&sort=price,-name >> sort by price (high to low) + name (Z-A) >> name will be use when price is the same
 
 */
 

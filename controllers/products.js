@@ -1,32 +1,35 @@
 const Product = require('../models/product')
 
 const getAllProductsStatic = async (req, res) => {
-  res.status(200).json({ msg: 'products testing route' })
+  const products = await Product.find({}).sort('-name price')
+  res.status(200).json({ products, nbHits: products.length })
 }
 
 const getAllProducts = async (req, res) => {
   // (a)
-  const { featured, company, name } = req.query
+  const { featured, company, name, sort } = req.query
   const queryObject = {}
 
-  // (b) add featured to queryObject
   if (featured) {
     queryObject.featured = featured === 'true' ? true : false
   }
-
-  // (c)
   if (company) {
     queryObject.company = company
   }
-
-  // (d)
   if (name) {
     queryObject.name = { $regex: name, $options: 'i' }
   }
 
-  console.log(queryObject)
+  let products = await Product.find(queryObject)
 
-  const products = await Product.find(queryObject) // apply here
+  if (sort) {
+    // (a) sort
+    const sortList = sort.split(',').join(' ') // we need space between each sort term >> name price, NOT nameprice (check getAllProductsStatic above)
+    products = products.sort()
+  } else {
+    // (b)
+    products = result.sort('createdAt')
+  }
 
   res.status(200).json({ nbHits: products.length, products })
 }
