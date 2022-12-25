@@ -1,14 +1,12 @@
 /*
-  - Setup basic express server
-  - Connect to DB 
-    + setup env
-    + app.js >> import connect.js and use
-  - /controllers >> setup getAllProducts and getAllProductsStatic route >> the static one is used to test when we work in controller
-  - /models >> setup model
-  - when we have model: use that to populate data to db using populate.js
+  This one, we will work with query string params 
+  - CASE 1: /products?featured=true >> req.query === {featured : true}
+  - CASE 2: /products?featured=true?company=caressa&name=a >>> we use regular expression >> name must contains letter 'a'
+
 */
 
 require('dotenv').config()
+require('express-async-errors')
 
 const express = require('express')
 const app = express()
