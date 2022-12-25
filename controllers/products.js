@@ -20,26 +20,32 @@ const getAllProducts = async (req, res) => {
     queryObject.name = { $regex: name, $options: 'i' }
   }
 
-  // to make sort work, need to change to let + remove await >> otherwise, will return error
   let products = Product.find(queryObject)
 
   if (sort) {
     const sortList = sort.split(',').join(' ')
     products = products.sort(sortList)
   } else {
-    products = products.sort('createdAt')
+    products = products.sort('createdAt _id')
   }
 
-  // (b)
   if (fields) {
     const fieldsList = fields.split(',').join(' ')
     products = products.select(fieldsList)
   }
 
-  // (c) must have this, otherwise error
+  // (a) setup pagination
+  const page = Number(req.query.page) || 1
+  const limit = Number(req.query.limit) || 10
+  const skip = (page - 1) * limit
+
+  console.log(sort, page, limit, skip)
+  // (b)
+  products = products.limit(limit).skip(skip)
+
   const newProducts = await products
 
-  res.status(200).json({ nbHits: products.length, newProducts }) // using newProducts, not products
+  res.status(200).json({ nbHits: products.length, newProducts })
 }
 
 module.exports = { getAllProducts, getAllProductsStatic }
