@@ -7,7 +7,7 @@ const getAllProductsStatic = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
   // (a)
-  const { featured, company, name, sort } = req.query
+  const { featured, company, name, sort, fields } = req.query
   const queryObject = {}
 
   if (featured) {
@@ -20,19 +20,26 @@ const getAllProducts = async (req, res) => {
     queryObject.name = { $regex: name, $options: 'i' }
   }
 
-  // (a) to make this work >>> must remove await & use let
+  // to make sort work, need to change to let + remove await >> otherwise, will return error
   let products = Product.find(queryObject)
 
   if (sort) {
-    // (b) sort
-    const sortList = sort.split(',').join(' ') // we need space between each sort term >> name price, NOT nameprice (check getAllProductsStatic above)
+    const sortList = sort.split(',').join(' ')
     products = products.sort(sortList)
   } else {
-    // (c)
-    products = result.sort('createdAt')
+    products = products.sort('createdAt')
   }
 
-  res.status(200).json({ nbHits: products.length, products })
+  // (b)
+  if (fields) {
+    const fieldsList = fields.split(',').join(' ')
+    products = products.select(fieldsList)
+  }
+
+  // (c) must have this, otherwise error
+  const newProducts = await products
+
+  res.status(200).json({ nbHits: products.length, newProducts }) // using newProducts, not products
 }
 
 module.exports = { getAllProducts, getAllProductsStatic }
